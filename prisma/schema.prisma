@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model ChatMessage {
+  id         Int      @id @default(autoincrement())
+  name       String
+  message    String   @db.LongText
+  ip         String
+  userAgent  String
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("chat")
+}
