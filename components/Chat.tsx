@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import apiClient from "src/utils/api.js";
 import { io, type Socket } from "socket.io-client";
 
 type ChatMessage = {
@@ -61,16 +62,28 @@ export default function Chat() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
   }, [messages]);
 
-  const send = (event: React.FormEvent) => {
+  const send = async (event: React.FormEvent) => {
     event.preventDefault();
     const trimmed = text.trim();
     if (!trimmed) return;
 
-    socketRef.current?.emit("chat:message", {
-      user: user.trim() || "Anonymous",
-      text: trimmed,
-    });
-    setText("");
+    try {
+      await apiClient.post("/send-chat", {
+        name: user.trim() || "Anonymous",
+        message: trimmed,
+        user_agent: navigator.userAgent,
+        ip: window.location.hostname
+      });
+
+      socketRef.current?.emit("chat:message", {
+        user: user.trim() || "Anonymous",
+        text: trimmed,
+      });
+      setText("");
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

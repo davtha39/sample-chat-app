@@ -51,7 +51,7 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  ChatMessage: 'ChatMessage'
+  Chats: 'Chats'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -70,7 +70,7 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const ChatMessageScalarFieldEnum = {
+export const ChatsScalarFieldEnum = {
   id: 'id',
   name: 'name',
   message: 'message',
@@ -79,7 +79,7 @@ export const ChatMessageScalarFieldEnum = {
   createdAt: 'createdAt'
 } as const
 
-export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+export type ChatsScalarFieldEnum = (typeof ChatsScalarFieldEnum)[keyof typeof ChatsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -90,12 +90,12 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const ChatMessageOrderByRelevanceFieldEnum = {
+export const ChatsOrderByRelevanceFieldEnum = {
   name: 'name',
   message: 'message',
   ip: 'ip',
   userAgent: 'userAgent'
 } as const
 
-export type ChatMessageOrderByRelevanceFieldEnum = (typeof ChatMessageOrderByRelevanceFieldEnum)[keyof typeof ChatMessageOrderByRelevanceFieldEnum]
+export type ChatsOrderByRelevanceFieldEnum = (typeof ChatsOrderByRelevanceFieldEnum)[keyof typeof ChatsOrderByRelevanceFieldEnum]
 

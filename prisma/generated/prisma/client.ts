@@ -31,8 +31,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more ChatMessages
- * const chatMessages = await prisma.chatMessage.findMany()
+ * // Fetch zero or more Chats
+ * const chats = await prisma.chats.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -42,7 +42,7 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model ChatMessage
+ * Model Chats
  * 
  */
-export type ChatMessage = Prisma.ChatMessageModel
+export type Chats = Prisma.ChatsModel

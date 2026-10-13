@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.10.0",
   "engineVersion": "0edf323efd1d98336f3f0a68684b56f689b900d3",
   "activeProvider": "mysql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"./generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n}\n\nmodel ChatMessage {\n  id        Int      @id @default(autoincrement())\n  name      String\n  message   String   @db.LongText\n  ip        String\n  userAgent String\n  createdAt DateTime @default(now()) @map(\"created_at\")\n\n  @@map(\"chat\")\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"./generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n}\n\nmodel Chats {\n  id        Int      @id @default(autoincrement())\n  name      String\n  message   String   @db.LongText\n  ip        String\n  userAgent String   @map(\"user_agent\")\n  createdAt DateTime @default(now()) @map(\"created_at\")\n\n  @@map(\"chat\")\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -32,9 +32,9 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"ChatMessage\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"}],\"dbName\":\"chat\",\"schema\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Chats\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"user_agent\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"}],\"dbName\":\"chat\",\"schema\":null}},\"enums\":{},\"types\":{}}")
 config.parameterizationSchema = {
-  strings: JSON.parse("[\"where\",\"ChatMessage.findUnique\",\"ChatMessage.findUniqueOrThrow\",\"orderBy\",\"cursor\",\"ChatMessage.findFirst\",\"ChatMessage.findFirstOrThrow\",\"ChatMessage.findMany\",\"data\",\"ChatMessage.createOne\",\"ChatMessage.createMany\",\"ChatMessage.updateOne\",\"ChatMessage.updateMany\",\"create\",\"update\",\"ChatMessage.upsertOne\",\"ChatMessage.deleteOne\",\"ChatMessage.deleteMany\",\"having\",\"_count\",\"_avg\",\"_sum\",\"_min\",\"_max\",\"ChatMessage.groupBy\",\"ChatMessage.aggregate\",\"AND\",\"OR\",\"NOT\",\"id\",\"name\",\"message\",\"ip\",\"userAgent\",\"createdAt\",\"equals\",\"in\",\"notIn\",\"lt\",\"lte\",\"gt\",\"gte\",\"not\",\"contains\",\"startsWith\",\"endsWith\",\"search\",\"_relevance\",\"set\",\"increment\",\"decrement\",\"multiply\",\"divide\"]"),
+  strings: JSON.parse("[\"where\",\"Chats.findUnique\",\"Chats.findUniqueOrThrow\",\"orderBy\",\"cursor\",\"Chats.findFirst\",\"Chats.findFirstOrThrow\",\"Chats.findMany\",\"data\",\"Chats.createOne\",\"Chats.createMany\",\"Chats.updateOne\",\"Chats.updateMany\",\"create\",\"update\",\"Chats.upsertOne\",\"Chats.deleteOne\",\"Chats.deleteMany\",\"having\",\"_count\",\"_avg\",\"_sum\",\"_min\",\"_max\",\"Chats.groupBy\",\"Chats.aggregate\",\"AND\",\"OR\",\"NOT\",\"id\",\"name\",\"message\",\"ip\",\"userAgent\",\"createdAt\",\"equals\",\"in\",\"notIn\",\"lt\",\"lte\",\"gt\",\"gte\",\"not\",\"contains\",\"startsWith\",\"endsWith\",\"search\",\"_relevance\",\"set\",\"increment\",\"decrement\",\"multiply\",\"divide\"]"),
   graph: "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"
 }
 
@@ -70,8 +70,8 @@ export interface PrismaClientConstructor {
    * const prisma = new PrismaClient({
    *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
    * })
-   * // Fetch zero or more ChatMessages
-   * const chatMessages = await prisma.chatMessage.findMany()
+   * // Fetch zero or more Chats
+   * const chats = await prisma.chats.findMany()
    * ```
    * 
    * Read more in our [docs](https://pris.ly/d/client).
@@ -94,8 +94,8 @@ export interface PrismaClientConstructor {
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more ChatMessages
- * const chatMessages = await prisma.chatMessage.findMany()
+ * // Fetch zero or more Chats
+ * const chats = await prisma.chats.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -189,14 +189,14 @@ export interface PrismaClient<
   }>>
 
       /**
-   * `prisma.chatMessage`: Exposes CRUD operations for the **ChatMessage** model.
+   * `prisma.chats`: Exposes CRUD operations for the **Chats** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more ChatMessages
-    * const chatMessages = await prisma.chatMessage.findMany()
+    * // Fetch zero or more Chats
+    * const chats = await prisma.chats.findMany()
     * ```
     */
-  get chatMessage(): Prisma.ChatMessageDelegate<ExtArgs, { omit: OmitOpts }>;
+  get chats(): Prisma.ChatsDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

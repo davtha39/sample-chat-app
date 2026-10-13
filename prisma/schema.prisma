@@ -7,12 +7,12 @@ datasource db {
   provider = "mysql"
 }
 
-model ChatMessage {
+model Chats {
   id         Int      @id @default(autoincrement())
   name       String
   message    String   @db.LongText
   ip         String
-  userAgent  String
+  userAgent  String   @map("user_agent")
   createdAt  DateTime @default(now()) @map("created_at")
 
   @@map("chat")
