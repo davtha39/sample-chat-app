@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { prisma } from "../../lib/prisma";
 
 export const config = {
   api: {
@@ -11,10 +12,32 @@ const MAX_MESSAGES = 100;
 const MAX_TEXT_LENGTH = 500;
 const MAX_NAME_LENGTH = 32;
 
-const messages = [];
+let messages = [];
 
-export default function socketHandler(_req, res) {
+async function loadMessagesFromDB() {
+  try {
+    const chats = await prisma.chats.findMany({
+      orderBy: { createdAt: "asc" },
+      take: MAX_MESSAGES,
+    });
+
+    messages = chats.map((chat) => ({
+      id: `${chat.createdAt.getTime()}-${chat.id}`,
+      user: chat.name,
+      text: chat.message,
+      at: chat.createdAt.getTime(),
+    }));
+    console.log(`Loaded ${messages.length} messages from database`);
+  } catch (error) {
+    console.error("Error loading messages from database:", error);
+    messages = [];
+  }
+}
+
+export default async function socketHandler(_req, res) {
   if (!res.socket.server.io) {
+    await loadMessagesFromDB();
+
     const io = new Server(res.socket.server, {
       path: "/api/socket",
       addTrailingSlash: false,
@@ -28,7 +51,7 @@ export default function socketHandler(_req, res) {
       socket.emit("chat:history", messages);
       broadcastPresence();
 
-      socket.on("chat:message", (payload = {}) => {
+      socket.on("chat:message", async (payload = {}) => {
         const text =
           typeof payload.text === "string"
             ? payload.text.trim().slice(0, MAX_TEXT_LENGTH)
@@ -49,6 +72,19 @@ export default function socketHandler(_req, res) {
 
         messages.push(message);
         if (messages.length > MAX_MESSAGES) messages.shift();
+
+        // try {
+        //   await prisma.chats.create({
+        //     data: {
+        //       name: user,
+        //       message: text,
+        //       ip: "-",
+        //       userAgent: "socket.io",
+        //     },
+        //   });
+        // } catch (error) {
+        //   console.error("Error saving message to database:", error);
+        // }
 
         io.emit("chat:message", message);
       });

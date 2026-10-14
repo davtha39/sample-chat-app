@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import apiClient from "src/utils/api.js";
+import apiClient from "../src/utils/api.js";
 import { io, type Socket } from "socket.io-client";
 
 type ChatMessage = {
@@ -26,13 +26,35 @@ export default function Chat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [user, setUser] = useState("");
   const [text, setText] = useState("");
+  const [clientInfo, setClientInfo] = useState<object | null>(null);
 
   useEffect(() => {
     let socket: Socket | null = null;
     let cancelled = false;
+    let clientInfo: object | null = null;
+
+    const getClientInfo = async () => {
+      const res = await apiClient.get('https://ipinfo.io/json');
+      clientInfo = res ? res.data : null;
+      setClientInfo(clientInfo);
+    };
+
+    const fetchHistory = async () => {
+      try {
+        const res = await apiClient.get("/api/chat-history");
+        if (res?.data?.messages && !cancelled) {
+          setMessages(res.data.messages);
+        }
+      } catch (error) {
+        console.error("Error fetching chat history:", error);
+      }
+    };
+
+    getClientInfo();
+    fetchHistory();
 
     const connect = async () => {
-      await fetch("/api/socket", { cache: "no-store" }).catch(() => {});
+      await apiClient.get("/api/socket").catch(() => {});
       if (cancelled) return;
 
       socket = io({ path: "/api/socket" });
@@ -40,15 +62,14 @@ export default function Chat() {
 
       socket.on("connect", () => setConnected(true));
       socket.on("disconnect", () => setConnected(false));
-      socket.on("chat:history", (history: ChatMessage[]) =>
-        setMessages(history),
-      );
+      socket.on("chat:history", (history: ChatMessage[]) => {
+        if (!cancelled) setMessages(history);
+      });
       socket.on("chat:message", (message: ChatMessage) =>
         setMessages((prev) => [...prev, message]),
       );
       socket.on("chat:presence", (count: number) => setPresence(count));
     };
-    console.log(messages);
     connect();
 
     return () => {
@@ -72,7 +93,7 @@ export default function Chat() {
         name: user.trim() || "Anonymous",
         message: trimmed,
         user_agent: navigator.userAgent,
-        ip: window.location.hostname
+        ip: (clientInfo as { ip?: string })?.ip || "-",
       });
 
       socketRef.current?.emit("chat:message", {

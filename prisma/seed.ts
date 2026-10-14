@@ -24,7 +24,7 @@ const sampleMessages = [
 
 async function main() {
   for (const msg of sampleMessages) {
-    await prisma.chatMessage.create({
+    await prisma.chats.create({
       data: msg,
     });
   }
